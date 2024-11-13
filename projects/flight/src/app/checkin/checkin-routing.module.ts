@@ -1,9 +1,9 @@
-import { Routes } from "@angular/router";
-import { PassengerEditComponent, PassengerSearchComponent } from "./feature-passenger";
-import { MilesComponent } from "./feature-miles";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { PassengerEditComponent, PassengerSearchComponent } from './feature-passenger';
 
 
-export const CHECKIN_ROUTES: Routes = [
+const routes: Routes = [
   {
     path: '',
     children: [
@@ -29,13 +29,13 @@ export const CHECKIN_ROUTES: Routes = [
             component: PassengerEditComponent
           }
         ]
-      },
-      {
-        path: 'miles',
-        component: MilesComponent
       }
     ]
   }
 ];
 
-export default CHECKIN_ROUTES;
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class CheckinRoutingModule { }

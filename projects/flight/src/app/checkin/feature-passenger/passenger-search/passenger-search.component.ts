@@ -1,26 +1,19 @@
-import { NgFor, NgIf } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { PassengerStore, Passenger } from '../../logic-passenger';
+import { Component, Inject } from '@angular/core';
+import { Passenger, PassengerStore } from '../../logic-passenger';
 
 
 @Component({
   selector: 'app-passenger-search',
-  imports: [
-    NgFor, NgIf,
-    RouterLink,
-    FormsModule
-  ],
+  standalone: false,
   templateUrl: './passenger-search.component.html'
 })
 export class PassengerSearchComponent {
-  private store = inject(PassengerStore);
-
   firstname = '';
   lastname = 'Smith';
   passengers = this.store.passengerEntities;
   selectedPassenger?: Passenger;
+
+  constructor(@Inject(PassengerStore) private store: InstanceType<typeof PassengerStore>) {}
 
   search(): void {
     if (!(this.firstname || this.lastname)) return;

@@ -1,24 +1,18 @@
-import { NgIf } from '@angular/common';
-import { Component, effect, inject, input, numberAttribute, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
+import { NonNullableFormBuilder } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { PassengerService } from '../../logic-passenger';
 import { validatePassengerStatus } from '../../util-validation';
-import { initialPassenger } from '../../logic-passenger';
-import { PassengerService } from '../../logic-passenger/data-access/passenger.service';
-import { switchMap } from 'rxjs';
 
 
 @Component({
   selector: 'app-passenger-edit',
-  imports: [
-    NgIf,
-    ReactiveFormsModule
-  ],
+  standalone: false,
   templateUrl: './passenger-edit.component.html'
 })
 export class PassengerEditComponent {
-  private passengerService = inject(PassengerService);
-  protected editForm = inject(NonNullableFormBuilder).group({
+  protected editForm = this.formBuilder.group({
     id: [0],
     firstName: [''],
     name: [''],
@@ -28,15 +22,18 @@ export class PassengerEditComponent {
     ]]
   });
 
-  id = input<number, string>(0, { transform: numberAttribute });
-  passenger = toSignal(
-    toObservable(this.id).pipe(
+  constructor(
+    private formBuilder: NonNullableFormBuilder,
+    private route: ActivatedRoute,
+    private passengerService: PassengerService
+  ) {
+    this.route.paramMap.pipe(
+      map(params => +(params.get('id') || 0)),
+      distinctUntilChanged(),
       switchMap(id => this.passengerService.findById(id))
-    ), { initialValue: initialPassenger }
-  );
-
-  constructor() {
-    effect(() => this.editForm.patchValue(this.passenger()));
+    ).subscribe(
+      passenger => this.editForm.patchValue(passenger)
+    );
   }
 
   protected save(): void {
