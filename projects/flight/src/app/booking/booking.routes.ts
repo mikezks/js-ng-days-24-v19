@@ -1,6 +1,6 @@
 import { importProvidersFrom, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FlightBookingComponent, FlightEditComponent, FlightSearchComponent } from './feature-flight';
+
 import { FlightResolver } from './logic-flight';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
@@ -11,7 +11,7 @@ import { ticketFeature } from './logic-flight/+state/reducer';
 export const BOOKING_ROUTES: Routes = [
   {
     path: '',
-    component: FlightBookingComponent,
+    loadComponent: () => import('./feature-flight').then(m => m.FlightBookingComponent),
     providers: [
       importProvidersFrom(
         StoreModule.forFeature(ticketFeature),
@@ -34,11 +34,11 @@ export const BOOKING_ROUTES: Routes = [
           },
           {
             path: 'search',
-            component: FlightSearchComponent,
+            loadComponent: () => import('./feature-flight').then(m => m.FlightSearchComponent),
           },
           {
             path: 'edit/:id',
-            component: FlightEditComponent,
+            loadComponent: () => import('./feature-flight').then(m => m.FlightEditComponent),
             resolve: {
               flight: FlightResolver
             }

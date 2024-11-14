@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { FlightService } from './booking/logic-flight/data-access/flight.service';
+import { Component, inject } from '@angular/core';
 
 
 @Component({
@@ -7,4 +8,7 @@ import { Component } from '@angular/core';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  flights = inject(FlightService).flights;
+
+  constructor(private flightService: FlightService) {}
 }
