@@ -1,5 +1,5 @@
 import { FlightService } from './booking/logic-flight/data-access/flight.service';
-import { Component, inject } from '@angular/core';
+import { afterRenderEffect, Component, inject, Signal } from '@angular/core';
 
 
 @Component({
@@ -8,7 +8,14 @@ import { Component, inject } from '@angular/core';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  flights = inject(FlightService).flights;
+  constructor() {
+    afterRenderEffect(() => console.log('mixedReadWrite per shorthand syntax'));
 
-  constructor(private flightService: FlightService) {}
+    afterRenderEffect({
+      earlyRead: () => { console.log('earlyRead'); return 'info for next phase'; },
+      write: (info: Signal<string>) => { console.log('write,', info()); },
+      mixedReadWrite: () => { console.log('mixedReadWrite'); },
+      read: () => { console.log('read'); },
+    });
+  }
 }
