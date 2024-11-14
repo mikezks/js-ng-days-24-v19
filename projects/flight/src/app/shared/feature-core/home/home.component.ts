@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-home',
-  standalone: false,
+  standalone: true,
   template: `
     <div class="card">
       <div class="card-header">
